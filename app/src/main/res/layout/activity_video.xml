@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+        <variable name="activity" type="com.emi.nollyfilms.ui.VideoActivity"/>
+        <import type="android.view.View"/>
+    </data>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:onRefreshListener="@{() -> activity.refresh(refresh)}">
+
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtube_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:videoId="@string/videourl"
+            app:autoPlay="true"
+            app:useWebUi="true"
+            app:showFullScreenButton="true"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ImageView
+      android:id="@+id/exit"
+     android:layout_alignParentStart="true"
+     android:layout_marginEnd="5dp"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+    android:background="@android:drawable/ic_menu_close_clear_cancel"/>
+
+    <View   android:visibility="gone"
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"/>
+
+    <ProgressBar android:id="@+id/progress"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:layout_centerHorizontal="true"
+                 android:progressTint="@color/red"
+                 android:visibility="@{safeUnbox(activity.isLoading()) ? View.VISIBLE : View.GONE}"/>
+</RelativeLayout>
+
+</layout>

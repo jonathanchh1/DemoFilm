@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#FF4A4A</color>
+    <color name="textColor">#000</color>
+    <color name="description_space">#ECECEC</color>
+    <color name="titleColor">#FF00</color>
+    <color name="transparent">#21868484</color>
+    <color name="shadow">#0c000000</color>
+    <color name="colorPrimarySecondary">#ffffff</color>
+    <color name="primary">#ffffff</color>
+    <color name="red">#FF00</color>
+    <color name="white">#FFFF</color>
+    <color name="toolbar_color">#e982e5</color>
+    <color name="tabs_color">#AEADAD</color>
+    <color name="text_color_for_movie_overview">@android:color/black</color>
+    <color name="text_background">@android:color/black</color>
+    <color name="text_color_for_review_content">@android:color/black</color>
+    <color name="viewBg">#f8f8f8</color>
+    <color name="btn_disabled">#B6B1B1</color>
+    <color name="lbl_value">#2D2D2D</color>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+    <data>
+        <variable name="detailViewPresenter" type="com.emi.nollyfilms.vm.DetailViewPresenter"/>
+    </data>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="12dp"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:foreground="?android:attr/selectableItemBackground"
+             android:orientation="horizontal">
+
+    <ImageView
+            android:id="@+id/trailer_thumbnail"
+            android:layout_width="@dimen/trailer_width_for_detail"
+            android:layout_height="@dimen/trailer_height_for_detail"
+            android:onClick="@{() -> detailViewPresenter.onPlay()}"
+            app:srcvideo="@{detailViewPresenter.videoThumb()}"
+            android:scaleType="centerCrop" />
+
+    <ImageButton
+            android:id="@+id/playerId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/shape"
+            android:onClick="@{() -> detailViewPresenter.onPlay()}"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_play_arrow_black_24dp" />
+</FrameLayout>
+</layout>

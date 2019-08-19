@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+    <data>
+        <variable name="detailViewModel" type="com.emi.nollyfilms.vm.DetailViewModel"/>
+        <variable name="activity" type="com.emi.nollyfilms.fragments.DetailFragment"/>
+        <import type="android.view.View"/>
+
+    </data>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context=".Fragments.DetailFragment">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/detail_horizontal_margin"
+                android:paddingRight="@dimen/detail_horizontal_margin">
+
+            <ImageView
+                    android:id="@+id/movie_poster"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_marginBottom="@dimen/movie_poster_vertical_padding"
+                    android:layout_marginEnd="@dimen/movie_poster_padding_right"
+                    app:srcCompat="@{activity.detailThumb()}"
+                    android:scaleType="fitXY"/>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:id="@+id/movie_title"
+                        style="?android:attr/textAppearanceMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/detail_title_bottom_margin"
+                        android:layout_marginStart="@dimen/detail_title_left_padding"
+                        android:textColor="@color/text_color_for_movie_overview"
+                        android:textIsSelectable="true"
+                        android:text="@{activity.originalTitle()}"
+                        android:textStyle="bold"/>
+
+                <RatingBar android:id="@+id/rating"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_below="@+id/movie_title"
+                           android:backgroundTint="@android:color/holo_red_light"
+                           style="@style/Widget.AppCompat.RatingBar.Indicator"
+                           android:progressTint="@color/red"
+                           android:rating="@{(float) activity.VoteAverage()/2}"
+                           android:stepSize="0.2"
+                           android:numStars="5"/>
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                        android:id="@+id/button_watch_trailer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/rating"
+                        android:layout_marginTop="@dimen/button_horizontal_padding"
+                        android:onClick="@{() -> activity.onWatch()}"
+                        android:layout_marginBottom="@dimen/button_vertical_margin"
+                        android:enabled="false"
+                        app:icon="@drawable/ic_local_movies_black_24dp"
+                        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+                        android:backgroundTint="@color/text_color_for_movie_overview"
+                        android:textColor="@android:color/white"
+                        app:iconTint="@color/white"
+                        android:textAlignment="center"
+                        android:text="@string/watch_trailer"
+                        android:textStyle="bold"/>
+
+
+                <TextView
+                        android:id="@+id/movie_vote_label"
+                        style="?android:attr/textAppearanceMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/button_watch_trailer"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@android:color/holo_red_light"
+                        android:layout_alignBaseline="@+id/movie_vote"
+                        android:textAlignment="center"
+                        android:text="RATED :"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+                <ImageView
+                        android:id="@+id/movie_vote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/button_watch_trailer"
+                        android:layout_toEndOf="@+id/movie_vote_label"
+                        android:src="@{activity.isAdult()? @drawable/ic_adult_rating : @drawable/ic_general_audience}"
+                        android:textStyle="bold"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/detail_horizontal_margin"
+                android:paddingRight="@dimen/detail_horizontal_margin">
+
+
+            <TextView
+                    android:id="@+id/movie_release_date"
+                    style="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{activity.release()}"
+                    android:paddingStart="@dimen/movie_date_vertical_padding"
+                    android:textColor="@color/text_color_for_movie_overview"
+                    android:textIsSelectable="true"/>
+
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/movie_overview"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/detail_horizontal_margin"
+                android:paddingRight="@dimen/detail_horizontal_margin"
+                android:paddingTop="@dimen/movie_overview_padding_top"
+                android:text="@{activity.desc()}"
+                android:textColor="@color/text_color_for_movie_overview"
+                android:textIsSelectable="true" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trailer_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginTop="@dimen/trailer_list_vertical_padding"
+                tools:listitem="@layout/content_trailer" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/trailer_list_vertical_padding"
+                android:clipChildren="true"
+                tools:listitem="@layout/review_content" />
+
+
+    </LinearLayout>
+</ScrollView>
+</layout>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">NollyFilms</string>
+    <string name="database_name">movies database</string>
+    <string name="share">share</string>
+    <string name="fav">favorite</string>
+    <string name="watch_trailer">Watch Trailer</string>
+    <string name="item_title">title</string>
+    <string name="item_description">movie description</string>
+    <string name="reviews">Totally awesome movie but bad acting</string>
+    <string name="author">martian</string>
+    <string name="unavailable">There\'s no available network</string>
+    <string name="btn_retry">try again</string>
+    <string name="popular">Popular</string>
+    <string name="top">Top Rated</string>
+    <string name="movies">movies</string>
+    <string name="votes">vote average</string>
+    <string name="videourl">videoUrl</string>
+    <string name="title">nolly films</string>
+    <string name="exist">no reviews!</string>
+</resources>
