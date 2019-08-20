@@ -18,7 +18,7 @@ class PresenterViewModel @Inject constructor( val context: Context,  var movies:
     fun title() = movies.original_title
     fun thumbnail() = movies.thumbnail
     fun desc() = movies.overview
-    fun popular() = movies.popularity?.times(2.4)
+    fun popular() = movies.popularity
 
 
     fun onShare() {

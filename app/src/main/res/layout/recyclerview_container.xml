@@ -2,6 +2,7 @@
 <layout>
     <data>
         <variable name="viewModel" type="com.emi.nollyfilms.vm.HomeViewModel"/>
+        <variable name="activity" type="com.emi.nollyfilms.fragments.HomeFragment"/>
         <import type="android.view.View"/>
     </data>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -65,8 +66,18 @@
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.isLoading() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{safeUnbox(viewModel.isLoading()) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center" />
+
+    <Button android:id="@+id/error_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:elevation="5dp"
+            android:visibility="gone"
+            android:onClick="@{() -> activity.retry()}"
+            android:text="@string/retry"
+            android:layout_gravity="center"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.emi.nollyfilms.databinding.ActivityVideoBinding
+import retrofit2.http.Url
 
 
 class VideoActivity : AppCompatActivity() {
@@ -26,21 +27,20 @@ class VideoActivity : AppCompatActivity() {
 
     var mYouTubePlayer: YouTubePlayer? = null
     var currentVolume = 3
-    private var youtube_video_id : String = ""
     private var youTubePlayerView : YouTubePlayerView?=null
     var isLoading = MutableLiveData(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        val binding : ActivityVideoBinding = DataBindingUtil.setContentView(this, R.layout.activity_video)
         binding.activity = this
         binding.lifecycleOwner = this
-        youtube_video_id = intent.getStringExtra(getString(R.string.videourl)) as String
         isLoading.value = true
         youTubePlayerView = findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         youTubePlayerView?.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 mYouTubePlayer = youTubePlayer
-                    youTubePlayer.loadVideo(youtube_video_id, 0f)
+                    youTubePlayer.loadVideo(videoId(), 1f)
                     youTubePlayer.setVolume(currentVolume)
                    isLoading.value = false
                 }
@@ -64,6 +64,10 @@ class VideoActivity : AppCompatActivity() {
             finish()
         }
 
+    }
+
+    fun videoId() : String{
+        return intent.getStringExtra(getString(R.string.videourl)) as String
     }
 
 

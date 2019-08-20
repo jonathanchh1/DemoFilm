@@ -39,7 +39,6 @@ class DetailFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       // movies = activity?.intent!!.getParcelableExtra(getString(R.string.movies)) as Movies
         movies = DetailMovies(activity?.intent!!, context!!)
         detailView = ViewModelProviders.of(this, injector.detailViewModelFactory()).get(DetailViewModel::class.java)
         videoAdapter = VideoAdapter(mutableListOf())

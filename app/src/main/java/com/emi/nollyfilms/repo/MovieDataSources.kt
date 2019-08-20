@@ -1,5 +1,6 @@
 package com.emi.nollyfilms.repo
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
@@ -8,7 +9,6 @@ import com.emi.nollyfilms.cache.DataSource
 import com.emi.nollyfilms.cache.MemoryDataSource
 import com.emi.nollyfilms.cache.NetworkDataSource
 import com.emi.nollyfilms.db.MovieDao
-import com.emi.nollyfilms.di.ResponseResult
 import com.emi.nollyfilms.model.Movies
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers
 
 class MovieDataSources constructor(private var sort : String?, private val movieDao: MovieDao,
                                    private val compositeDisposable: CompositeDisposable,
-                                   private var movieFinder: MovieFinder) : PageKeyedDataSource<Int, Movies>(){
+                                   private var movieFinder: MovieFinder, private var context: Context) : PageKeyedDataSource<Int, Movies>(){
 
     private var disposable = Disposables.empty()
     private var retry: (() -> Any)? = null
@@ -35,17 +35,6 @@ class MovieDataSources constructor(private var sort : String?, private val movie
         return createWebServer(1, 1, numberOfItems, callback, null, null )
     }
 
-    private fun insertDB(movie : Movies){
-        compositeDisposable.add(Observable.fromCallable {movieDao.insert(movie)}
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d(MovieDataSources::class.java.simpleName, "$it its id")
-            }, { error ->
-                    Log.d(MovieDataSources::class.java.simpleName, "${error.printStackTrace()}")
-                })
-        )
-    }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movies>) {
 
@@ -66,29 +55,26 @@ class MovieDataSources constructor(private var sort : String?, private val movie
                                  requestedLoadSize : Int, initalCallBack : LoadInitialCallback<Int, Movies>?,
                                  callback : LoadCallback<Int, Movies>?, params: LoadParams<Int>?) {
 
-        val memoryCache = MemoryDataSource()
+        val memoryCache = MemoryDataSource(context)
         val networkCache = NetworkDataSource(movieFinder)
         val dataSource = DataSource(memoryCache, networkCache)
-
         compositeDisposable.add(dataSource.getNetwork(sort, requestPage?.times(requestedLoadSize))
-                .observeOn(Schedulers.computation()).subscribe())
-
+            .observeOn(Schedulers.computation()).subscribe())
 
         compositeDisposable.add(dataSource.getDataFromMemory()
+            .subscribeOn(Schedulers.io())
             .subscribe({ response ->
                 response.results?.sortByDescending { it.popularity }
                 initalCallBack?.onResult(response.results!!, null, adjacentPage)
                 callback?.onResult(response.results!!, adjacentPage)
+                response.results?.map {
+                    insertDb(it) }
                 retry = null
                 Log.d(MovieDataSources::class.java.simpleName, "$sort movie sort")
                 isLoading.postValue(false)
-                response.results!!.map {
-                    insertDB(it)
-                }
 
             },
                 { error ->
-                    ResponseResult.error(error, error)
                     retry = {
                         loadAfter(params!!, callback!!)
                     }
@@ -97,6 +83,17 @@ class MovieDataSources constructor(private var sort : String?, private val movie
                 }
             )
         )
+
+    }
+
+    private fun insertDb(movie : Movies){
+        compositeDisposable.add(Observable.fromCallable { movieDao.insert(movie)}
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.d(MovieDataSources::class.java.simpleName, "$it its ids")
+            },
+                {error -> Log.d(MovieDataSources::class.java.simpleName, "${error.message}")}))
 
     }
 

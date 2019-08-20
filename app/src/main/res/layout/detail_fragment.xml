@@ -64,7 +64,7 @@
                            android:backgroundTint="@android:color/holo_red_light"
                            style="@style/Widget.AppCompat.RatingBar.Indicator"
                            android:progressTint="@color/red"
-                           android:rating="@{(float) activity.VoteAverage()/2}"
+                           android:rating="@{safeUnbox((float) activity.VoteAverage()/2)}"
                            android:stepSize="0.2"
                            android:numStars="5"/>
 
@@ -108,7 +108,7 @@
                         android:layout_height="45dp"
                         android:layout_below="@+id/button_watch_trailer"
                         android:layout_toEndOf="@+id/movie_vote_label"
-                        android:src="@{activity.isAdult()? @drawable/ic_adult_rating : @drawable/ic_general_audience}"
+                        android:src="@{safeUnbox(activity.isAdult())? @drawable/ic_adult_rating : @drawable/ic_general_audience}"
                         android:textStyle="bold"/>
             </RelativeLayout>
 

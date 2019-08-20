@@ -83,7 +83,7 @@
                 android:layout_width="@dimen/image_button_size"
                 android:layout_height="@dimen/image_button_size"
                 plainpie:inner_text_visibility="true"
-                plainpie:percentage="@{(float) movieModel.popular()}"
+                plainpie:percentage="@{safeUnbox((float) movieModel.popular()/2)}"
                 plainpie:percentage_size="15"
                 android:layout_alignStart="@+id/desc"
                 android:layout_alignTop="@+id/share_button"/>

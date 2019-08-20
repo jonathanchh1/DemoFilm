@@ -1,5 +1,6 @@
 package com.emi.nollyfilms.repo
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
@@ -11,14 +12,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 
 class MovieDataFactory(private val movieDao: MovieDao,
-                       private val composite : CompositeDisposable,  private val movieFinder: MovieFinder
-) : DataSource.Factory<Int, Movies>() {
+                       private val composite : CompositeDisposable,
+                       private val movieFinder: MovieFinder,
+                       private var context: Context) : DataSource.Factory<Int, Movies>() {
 
     private lateinit var dataSource : MovieDataSources
     private var sort = ""
     var sourceLiveData = MutableLiveData<DataSource<Int, Movies>>()
     override fun create(): DataSource<Int, Movies> {
-        dataSource = MovieDataSources(onQuery(), movieDao, composite, movieFinder)
+        dataSource = MovieDataSources(onQuery(), movieDao, composite, movieFinder, context)
         sourceLiveData.postValue(dataSource)
         return dataSource
     }

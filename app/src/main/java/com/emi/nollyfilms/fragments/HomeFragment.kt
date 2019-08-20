@@ -1,19 +1,12 @@
 package com.emi.nollyfilms.fragments
 
-import android.app.Activity
-import android.content.Context
-import android.database.DatabaseUtils
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.emi.nollyfilms.R
 import com.emi.nollyfilms.adapters.MovieAdapter
@@ -21,13 +14,16 @@ import com.emi.nollyfilms.api.MovieFinder.Companion.popular
 import com.emi.nollyfilms.api.MovieFinder.Companion.topRated
 import com.emi.nollyfilms.databinding.RecyclerviewContainerBinding
 import com.emi.nollyfilms.di.injector
-import com.emi.nollyfilms.model.Movies
 import com.emi.nollyfilms.vm.HomeViewModel
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview_container.*
+import org.mockito.internal.matchers.And
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 
 class HomeFragment  : Fragment(){
@@ -36,6 +32,7 @@ class HomeFragment  : Fragment(){
     private lateinit var adapter : MovieAdapter
     private lateinit var gridLayout : GridLayoutManager
     private lateinit var binding : RecyclerviewContainerBinding
+    private var compositeDisposable = CompositeDisposable()
     private val popularMovies = popular
     private val Toprated = topRated
     private val STORED_KEY = "choice"
@@ -65,6 +62,7 @@ class HomeFragment  : Fragment(){
         binding = DataBindingUtil.inflate(LayoutInflater.from(context),
             R.layout.recyclerview_container, container, false)
         binding.viewModel = viewModel
+        binding.activity = this
         binding.lifecycleOwner = this
         binding.mrecyclerview.adapter = adapter
         binding.mrecyclerview.layoutManager = gridLayout
@@ -89,30 +87,70 @@ class HomeFragment  : Fragment(){
        disposable =  viewModel.factoryList
            .observeOn(AndroidSchedulers.mainThread())
             .subscribe( { list ->
-                list.filter { it != null }.map {
-                    if (list.snapshot().size > 0 && list != null) {
+                list.filter { it != null }
+                    if(list.snapshot().size > 0 && list != null) {
                         adapter.submitList(list)
                         adapter.notifyDataSetChanged()
-                        //  Toast.makeText(context, "$list all data", Toast.LENGTH_SHORT).show()
-                        Log.d(HomeFragment::class.java.simpleName, "$list all data")
                         if (recyclerState != null) {
                             binding.mrecyclerview.layoutManager?.onRestoreInstanceState(recyclerState)
                             recyclerState = null
                         }
+                    }else{
+                        loadingFromDB()
                     }
-                }
             },
-                { error -> Log.e(HomeFragment::class.java.simpleName, "${error.printStackTrace()}")
-            })
-
+                { error ->
+                    onErrorHandling(error)
+                    error_button.visibility = View.VISIBLE
+                })
 
     }
 
+    fun loadingFromDB(){
+        disposable = viewModel.databaseLoader()!!
+            .observeOn(Schedulers.io())
+            .subscribe({
+                list ->
+                list.filter {  it != null }
+                   if(list.snapshot().size > 0 && list != null) {
+                       adapter.submitList(list)
+                       adapter.notifyDataSetChanged()
+                   }else{
+                       show()
+                   }
+               },
+                {
+                    error -> onErrorHandling(error)
+                    error_button.visibility = View.VISIBLE
 
+                })
+    }
 
+    fun show(){
+        disposable = Observable.fromCallable { DisplayError()}
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+    }
+
+    fun DisplayError(){
+        Toast.makeText(context, context?.getString(R.string.error), Toast.LENGTH_SHORT).show()
+    }
+
+    fun retry(){
+        viewModel.retry()
+        error_button.visibility = View.GONE
+    }
+
+   private fun onErrorHandling(msg : Throwable): Any {
+        return when(msg){
+            is SocketTimeoutException -> DisplayError()
+            is HttpException -> DisplayError()
+            else -> msg
+        }
+    }
 
     private fun sortChoice(sort : String) {
-        Log.d(HomeFragment::class.java.simpleName, "$sort sorting")
        return viewModel.onFetch(sort)
     }
 
@@ -127,14 +165,12 @@ class HomeFragment  : Fragment(){
 
     override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId){
         R.id.popular ->{
-            Toast.makeText(context, "popular movies", Toast.LENGTH_SHORT).show()
             sortBy = popularMovies
             sortChoice(sortBy)
             item.isChecked = true
             true
         }
         R.id.top_rated ->{
-            Toast.makeText(context, "top rated movies", Toast.LENGTH_SHORT).show()
             sortBy = Toprated
             sortChoice(sortBy)
             item.isChecked = true

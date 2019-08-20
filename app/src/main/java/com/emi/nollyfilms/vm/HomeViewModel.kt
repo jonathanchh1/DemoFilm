@@ -7,50 +7,61 @@ import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.emi.nollyfilms.api.MovieFinder
+import com.emi.nollyfilms.cache.DataSource
+import com.emi.nollyfilms.cache.MemoryDataSource
+import com.emi.nollyfilms.cache.NetworkDataSource
 import com.emi.nollyfilms.db.MovieDao
 import com.emi.nollyfilms.db.MovieRoomDatabase
 import com.emi.nollyfilms.model.Movies
 import com.emi.nollyfilms.repo.MovieDataFactory
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.internal.operators.observable.ObservableMergeWithMaybe
 import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val context: Context, private val movieFinder: MovieFinder): ViewModel() {
 
-    private val pageSize = 5
-    private  var sourceFactory: MovieDataFactory
+    private val pageSize = 1
+   private  var sourceFactory: MovieDataFactory
     private var db: MovieRoomDatabase = MovieRoomDatabase.getDatabase(context, viewModelScope)
     private var movieDao: MovieDao
     private val compositeDisposable = CompositeDisposable()
-    var factoryList : Observable<PagedList<Movies>>
-
+     var factoryList : Observable<PagedList<Movies>>
+    private var loadingDb : Observable<PagedList<Movies>>?=null
 
     init {
         movieDao = db.movieDao()
-        sourceFactory = MovieDataFactory(movieDao, compositeDisposable, movieFinder)
-        factoryList = RxPagedListBuilder(sourceFactory, config())
-            .setFetchScheduler(Schedulers.io())
-            .buildObservable()
-             .cache()
-            .cacheWithInitialCapacity(100)
-
+        sourceFactory = MovieDataFactory(movieDao, compositeDisposable, movieFinder, context)
+        factoryList = factoryList()
         Observable.fromArray(factoryList)
             .switchMap { s ->
                 s.distinctUntilChanged()
             }.toList()
-            .doAfterSuccess { Log.d(HomeViewModel::class.java.simpleName, "$it new list") }
             .subscribe()
+    }
+
+    fun factoryList() : Observable<PagedList<Movies>>{
+      return  RxPagedListBuilder(sourceFactory, config())
+            .setFetchScheduler(Schedulers.io())
+            .buildObservable()
+            .cache()
+            .cacheWithInitialCapacity(100)
+
+    }
+
+    fun databaseLoader() : Observable<PagedList<Movies>>?{
+        loadingDb = RxPagedListBuilder(movieDao.getAllMovies(), 5)
+            .setFetchScheduler(Schedulers.io())
+            .buildObservable()
+            return Observable.merge(factoryList, loadingDb)
     }
 
     private fun config(): PagedList.Config {
         val config = PagedList.Config.Builder()
-            .setPageSize(pageSize)
+            .setPageSize(100)
+            .setPrefetchDistance(2)
             .setInitialLoadSizeHint(pageSize * 2)
-            .setMaxSize(40)
             .setEnablePlaceholders(true)
             .build()
         return config
@@ -73,31 +84,13 @@ class HomeViewModel @Inject constructor(private val context: Context, private va
     }
 
     fun retry(){
-        sourceFactory.retryNetWork()
+     sourceFactory.retryNetWork()
     }
 
 
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
-    }
-
-
-    companion object{
-        const val movieData = "movies"
-        const val videoData = "videos"
-        const val reviewData = "reviews"
-
-       fun displayError(){}
-
-        fun errorHandling(error : Throwable?) {
-            return when(error){
-                is SocketTimeoutException ->  displayError()
-                is HttpException -> displayError()
-                is UnknownHostException -> displayError()
-                else -> displayError()
-            }
-        }
     }
 
 }

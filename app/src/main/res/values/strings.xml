@@ -17,4 +17,7 @@
     <string name="videourl">videoUrl</string>
     <string name="title">nolly films</string>
     <string name="exist">no reviews!</string>
+    <string name="movieCache">movieCache</string>
+    <string name="error">There was a network error while trying to load the movies</string>
+    <string name="retry">retry again</string>
 </resources>
