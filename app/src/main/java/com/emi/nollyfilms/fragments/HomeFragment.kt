@@ -1,6 +1,7 @@
 package com.emi.nollyfilms.fragments
 
 import android.os.Bundle
+import android.os.Looper
 import android.os.Parcelable
 import android.view.*
 import android.widget.Toast
@@ -21,9 +22,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview_container.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.mockito.internal.matchers.And
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
+import java.util.concurrent.Executor
 
 
 class HomeFragment  : Fragment(){
@@ -126,17 +132,14 @@ class HomeFragment  : Fragment(){
                 })
     }
 
-    fun show(){
-        disposable = Observable.fromCallable { DisplayError()}
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+    fun show()= MainScope()
+        .launch(Dispatchers.IO){
+        DisplayError()
     }
 
     fun DisplayError(){
         Toast.makeText(context, context?.getString(R.string.error), Toast.LENGTH_SHORT).show()
     }
-
     fun retry(){
         viewModel.retry()
         error_button.visibility = View.GONE
