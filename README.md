@@ -5,15 +5,15 @@ This is a sample Android app that shows movies information from the Open Movie D
 api endpoints. It Illustrates the usage of MVVM and Clean Architecture in Kotlin with various implementation ofknown and modern libraries for offline first support and state handling.
 
                                  TECHNOLOGIES/LIBRARIES
-RXJAVA
-DAGGER 2,
-YOUTUBE API,
-ROOM DB,
-PAGING LIBRARY,
-RETROFIT,
-LIVEDATA,
-RXANDROID,
-GSON,OKHTTP
+Rxjava
+Dagger 2,
+Youtube API,
+Room db,
+Paging Library,
+Retrofit,
+Livedata,
+Rxandroid,
+Gson,Okhttp
 
 <img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566508544.png" width="300"><img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566509325.png" width="300">
 
