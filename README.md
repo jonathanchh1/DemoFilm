@@ -15,8 +15,8 @@ LIVEDATA
 RXANDROID
 GSON,OKHTTP
 
+<img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566508544.png" width="300"><img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566508550.png" width="300"><img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566509325.png" width="300"><img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566509355.png" width="300"><img 
 
-<img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561561253.png" width="300"> <img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561559518.png" width="300"><img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561561155.png" width="300"><img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561561175.png" width="300"><img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561561257.png" width="300"><img src="https://github.com/jonathanchh1/NewsFeeding/blob/master/Screenshot_1561559505.png" width="300">
 
 Results are stored on a local database so it works offline. The user can tap on a movie to view more details and bookmark it. Bookmarked movies appear at the top of the list with a bookmark indicator.
 
