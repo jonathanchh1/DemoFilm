@@ -8,11 +8,11 @@ api endpoints. It Illustrates the usage of MVVM and Clean Architecture in Kotlin
 RXJAVA
 DAGGER 2,
 YOUTUBE API,
-ROOM DB
-PAGING LIBRARY
-RETROFIT
-LIVEDATA
-RXANDROID
+ROOM DB,
+PAGING LIBRARY,
+RETROFIT,
+LIVEDATA,
+RXANDROID,
 GSON,OKHTTP
 
 <img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566508544.png" width="300"><img src="https://github.com/jonathanchh1/NollyFilms/blob/master/Screenshot_1566509325.png" width="300">
