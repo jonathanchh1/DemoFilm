@@ -2,7 +2,7 @@
                                           NOLLYFILMS
 
 This is a sample Android app that shows movies information from the Open Movie Database API, exposing two different
-api endpoints. It Illustrates the usage of MVVM and Clean Architecture in Kotlin with various implementation ofknown and modern libraries for offline first support and state handling.
+api endpoints. It Illustrates the usage of MVVM and Clean Architecture in Kotlin with various implementation of known and modern libraries for offline first support and state handling.
 
                                  TECHNOLOGIES/LIBRARIES
 Rxjava
